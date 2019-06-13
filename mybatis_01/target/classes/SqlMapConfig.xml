@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<!--mybatis主配置文件-->
+<configuration>
+    <properties resource="mysql.properties"/>
+    <settings>
+        <!--开启驼峰命名法-->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
+    <!--定义别名-->
+    <typeAliases>
+        <!--单个别名-->
+        <!--<typeAlias type="com.lb.pojo.User" alias="user"/>-->
+        <!--批量定义别名-->
+        <package name="com.lb.pojo"/>
+    </typeAliases>
+    <!--配置环境-->
+    <environments default="MySQL">
+        <!--配置MySQL的环境-->
+        <environment id="MySQL">
+            <!--配置事务的类型-->
+            <transactionManager type="JDBC"></transactionManager>
+            <!--配置数据源（数据源）-->
+            <dataSource type="POOLED">
+                <!--配置数据库的基本信息-->
+                <property name="driver" value="${mysql.driver}"/>
+                <property name="url" value="${mysql.url}"/>
+                <property name="username" value="${mysql.username}"/>
+                <property name="password" value="${mysql.password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <!--指定映射的位置-->
+    <mappers>
+        <mapper resource="mapper/UserMapper.xml"/>
+        <mapper resource="mapper/AccountMapper.xml"/>
+        <mapper resource="mapper/RoleMapper.xml"/>
+    </mappers>
+</configuration>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lb.Dao.AccountMapper">
+    <!--column表示数据库字段名,property表示映射到实体的属性-->
+    <resultMap id="accountUser" type="account">
+        <id property="id" column="aid"/>
+        <result property="uid" column="uid"/>
+        <result property="money" column="money"/>
+        <!--一对一的关系映射-->
+        <association property="user" javaType="com.lb.pojo.User">
+            <id property="userId" column="user_id"/>
+            <result property="userName" column="user_name"/>
+            <result property="userSex" column="user_sex"/>
+            <result property="userAddress" column="user_address"/>
+            <result property="userBirthday" column="user_birthday"/>
+        </association>
+    </resultMap>
+    <select id="findAll" resultMap="accountUser">
+        select u.*,a.id as aid,a.uid,a.money from account a,user u where u.user_id = a.uid;
+    </select>
+    <select id="findAllAccountUser" resultType="accountuser">
+        SELECT a.*,u.user_name,u.user_address FROM account a, `user` u WHERE a.uid = u.user_id
+    </select>
+
+</mapper>

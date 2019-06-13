@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lb.Dao.UserMapper">
+    <!--resultMap-->
+    <resultMap id="UserMap" type="com.lb.pojo.User">
+        <!--主键-->
+        <id property="userId" column="user_id"/>
+        <!--其他属性-->
+        <result property="userName" column="user_name"/>
+        <result property="userSex" column="user_sex"/>
+        <result property="userAddress" column="user_address"/>
+        <result property="userBirthday" column="user_birthday"/>
+    </resultMap>
+    <resultMap id="userAccount" type="user">
+        <!--主键-->
+        <id property="userId" column="user_id"/>
+        <!--其他属性-->
+        <result property="userName" column="user_name"/>
+        <result property="userSex" column="user_sex"/>
+        <result property="userAddress" column="user_address"/>
+        <result property="userBirthday" column="user_birthday"/>
+        <collection property="accounts" ofType="account">
+            <id property="id" column="id"/>
+            <result property="uid" column="uid"/>
+            <result property="money" column="money"/>
+        </collection>
+    </resultMap>
+    <!--sql语句-->
+    <select id="findAccountUser" resultMap="userAccount">
+        SELECT * FROM `user` u LEFT OUTER JOIN account a ON u.user_id = a.UID
+    </select>
+    <select id="findAll" resultMap="userAccount">
+        select * from user
+    </select>
+    <select id="findByid" parameterType="int" resultMap="UserMap">
+        select *from user where user_id = #{id}
+    </select>
+    <select id="findByName" parameterType="string" resultMap="UserMap">
+        select *from user where user_name like '%${value}%'
+    </select>
+    <select id="findByEmployee" parameterType="employee" resultMap="UserMap">
+        select *from user where user_name like #{user.userName}
+    </select>
+    <select id="findByCondition" parameterType="user" resultMap="UserMap">
+         select * from user
+         <where>
+             <if test="userName != null and userName != ''">
+                 and  user_name  like #{userName}
+             </if>
+         </where>
+    </select>
+    <select id="findByForEach" parameterType="employee" resultMap="UserMap">
+        select * from user
+        <where>
+            <if test="idList != null and idList.size()>0">
+                <foreach collection="idList" open=" and user_id in(" close=")" item="id" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </select>
+    <!--saveUser-->
+    <insert id="saveUser" parameterType="user">
+        <selectKey keyProperty="userId" keyColumn="user_id" order="AFTER" resultType="int">
+            select last_insert_()
+        </selectKey>
+        insert into user (user_name,user_address,user_sex,user_birthday)values (#{userName},#{userAddress},#{userSex},#{userBirthday})
+    </insert>
+    <!--update-->
+    <update id="updateUser" parameterType="user">
+        update user set user_name=#{userName} where user_id = #{userId}
+    </update>
+    <!--delete-->
+    <delete id="deleteUser" parameterType="int">
+        delete from user where user_id = #{userId}
+    </delete>
+</mapper>
